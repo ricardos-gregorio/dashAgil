@@ -15,6 +15,12 @@
     .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:14px}
     .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
     .kpi .t{font-size:12px;color:var(--muted);text-transform:uppercase}.kpi .v{font-size:30px;font-weight:700}.kpi .s{font-size:12px;color:var(--muted)}
+    .exec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0}
+    .exec{background:rgba(255,255,255,.02);border:1px solid var(--line);border-radius:10px;padding:10px}
+    .exec .t{font-size:12px;color:var(--muted);text-transform:uppercase}.exec .v{font-size:24px;font-weight:700}.exec .s{font-size:12px;color:var(--muted)}
+    .ref-box{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+    .ref-box ul{margin:8px 0 0 18px;padding:0}
+    .ref-box li{margin-bottom:6px}
     details.section{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}
     details.section > summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:700;border-bottom:1px solid var(--line)}
     details.section > summary::-webkit-details-marker{display:none}
@@ -34,7 +40,7 @@
   <div class="container">
     <h1>Dashboard Ágil de Backlog</h1>
     <p class="subtitle">Métricas e lista dos itens em aberto (últimos 60 dias, estado diferente de Done)</p>
-    <p class="subtitle">Atualizado em: 04/03/2026 13:51:46</p>
+    <p class="subtitle">Atualizado em: 04/03/2026 15:23:45</p>
 
     <div class="toolbar">
       <label for="projectFilter">Projeto:</label><select id="projectFilter"></select>
@@ -49,16 +55,52 @@
     </div>
 
     <details class="section" open>
+      <summary>Comparativo Executivo: Tradicional x SDD (atividade estimada em 16h)</summary>
+      <div class="section-content">
+        <div class="exec-grid">
+          <div class="exec"><div class="t">Execução Tradicional</div><div class="v" id="execTradHours">16h</div><div class="s">Baseline do Poker Planning</div></div>
+          <div class="exec"><div class="t">Execução SDD</div><div class="v" id="execSddHours">10.4h</div><div class="s">Aplicando ganho de produtividade</div></div>
+          <div class="exec"><div class="t">Ganho por Atividade</div><div class="v" id="execGainHours">5.6h</div><div class="s" id="execGainPct">35.0%</div></div>
+          <div class="exec"><div class="t">Volumetria OKR / Sprint</div><div class="v" id="execOkrSprint">10 vs 15.4</div><div class="s">Capacidade de 160h por sprint</div></div>
+        </div>
+        <div class="charts">
+          <div class="chart-box"><h3>Comparativo de Horas por Atividade</h3><div class="chart-note">Atividade com estimativa de 16h no planning poker</div><canvas id="chartExecHours"></canvas></div>
+          <div class="chart-box"><h3>Volumetria de OKR (Sprint e Trimestre)</h3><div class="chart-note">Quantidade estimada de atividades concluídas</div><canvas id="chartExecOkr"></canvas></div>
+        </div>
+        <div class="ref-box">
+          <strong>Fontes da métrica e referência</strong>
+          <ul>
+            <li><strong>Métrica captada (interna):</strong> baseline de 16h informado no Poker Planning (estimativa da atividade).</li>
+            <li><strong>Faixa de produtividade usada para SDD:</strong> 35% (ponto médio conservador dentro de 20-45% para tarefas de engenharia assistida por IA/especificação).
+              Referência: <a href="https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/unleashing-developer-productivity-with-generative-ai" target="_blank" rel="noreferrer">McKinsey - Unleashing developer productivity with generative AI</a>.</li>
+            <li><strong>Contexto adicional de ganho de velocidade:</strong> experimento controlado reportado pelo GitHub com ganho médio de velocidade em tarefas de codificação.
+              Referência: <a href="https://github.blog/news-insights/research/the-economic-impact-of-the-ai-powered-developer-lifecycle-and-lessons-from-github-copilot/" target="_blank" rel="noreferrer">GitHub Research - Economic impact</a>.</li>
+            <li><strong>Referência do método de estimativa (Planning Poker):</strong>
+              <a href="https://www.atlassian.com/agile/project-management/estimation" target="_blank" rel="noreferrer">Atlassian - Story points and estimation</a>.</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <details class="section" open>
       <summary>Gráficos de Performance (aberto)</summary>
       <div class="section-content">
         <div class="charts">
-          <div class="chart-box"><h3>1. Throughput</h3><div class="chart-note">Itens criados por semana</div><canvas id="chartThroughput"></canvas></div>
-          <div class="chart-box"><h3>2. Throughput Valor + Bugs</h3><div class="chart-note">Stack semanal: valor (não bug) + bugs</div><canvas id="chartThroughputValorBugs"></canvas></div>
-          <div class="chart-box"><h3>3. Taxa de Bugs</h3><div class="chart-note">% bugs por semana</div><canvas id="chartBugRate"></canvas></div>
-          <div class="chart-box"><h3>4. Capacidade (Tempo de Ciclo)</h3><div class="chart-note">Média de dias em aberto por responsável</div><canvas id="chartCapacity"></canvas></div>
-          <div class="chart-box"><h3>5. Tempo Médio para Desbloqueio (MTTU)</h3><div class="chart-note">Proxy: média de dias dos itens bloqueados por projeto</div><canvas id="chartMttu"></canvas></div>
-          <div class="chart-box"><h3>6. Velocity</h3><div class="chart-note">Proxy: itens por sprint (14 dias)</div><canvas id="chartVelocity"></canvas></div>
-          <div class="chart-box"><h3>7. Burndown</h3><div class="chart-note">Ideal vs real por dia (janela de 60 dias)</div><canvas id="chartBurndown"></canvas></div>
+          <div class="chart-box"><h3>1. Throughput Total por Período</h3><div class="chart-note">Itens por janela semanal (bucket de idade)</div><canvas id="chartThroughputTotal"></canvas></div>
+          <div class="chart-box"><h3>2. Throughput por Tipo de Item</h3><div class="chart-note">Distribuição semanal por tipo</div><canvas id="chartThroughputTipo"></canvas></div>
+          <div class="chart-box"><h3>3. Lead Time (Médio, P85, P95)</h3><div class="chart-note">Proxy com dias em aberto dos itens filtrados</div><canvas id="chartLeadTime"></canvas></div>
+          <div class="chart-box"><h3>4. Cycle Time (Médio, P85, P95)</h3><div class="chart-note">Proxy com dias em aberto em andamento</div><canvas id="chartCycleTime"></canvas></div>
+          <div class="chart-box"><h3>5. Taxa de Bugs</h3><div class="chart-note">% de bugs por período</div><canvas id="chartBugRate"></canvas></div>
+          <div class="chart-box"><h3>6. Work in Progress (WIP)</h3><div class="chart-note">Quantidade por coluna e WIP médio</div><canvas id="chartWip"></canvas></div>
+          <div class="chart-box"><h3>7. Aging de Itens em Andamento</h3><div class="chart-note">Faixas de idade para itens ativos</div><canvas id="chartAging"></canvas></div>
+          <div class="chart-box"><h3>8. Tempo Médio para Desbloqueio</h3><div class="chart-note">Proxy por projeto com itens bloqueados</div><canvas id="chartMttu"></canvas></div>
+          <div class="chart-box"><h3>9. Percentual de Itens Bloqueados</h3><div class="chart-note">Relação bloqueados x não bloqueados</div><canvas id="chartBlockedPct"></canvas></div>
+          <div class="chart-box"><h3>10. Flow Efficiency</h3><div class="chart-note">Proxy por projeto (1 - % bloqueados)</div><canvas id="chartFlowEfficiency"></canvas></div>
+          <div class="chart-box"><h3>11. Cumulative Flow Diagram (CFD)</h3><div class="chart-note">Distribuição por estado ao longo dos períodos</div><canvas id="chartCfd"></canvas></div>
+          <div class="chart-box"><h3>12. Previsibilidade (Lead Time)</h3><div class="chart-note">Curva acumulada da distribuição de lead time</div><canvas id="chartPredictability"></canvas></div>
+          <div class="chart-box"><h3>13. Taxa de Retrabalho</h3><div class="chart-note">Proxy por projeto para estados de retrabalho/reaberto</div><canvas id="chartRework"></canvas></div>
+          <div class="chart-box"><h3>14. Tempo de Espera por Etapa</h3><div class="chart-note">Média de dias por estado</div><canvas id="chartWaitByStage"></canvas></div>
+          <div class="chart-box"><h3>15. Estabilidade do Throughput</h3><div class="chart-note">Throughput semanal com média, variação e desvio padrão</div><canvas id="chartThroughputStability"></canvas></div>
         </div>
       </div>
     </details>
@@ -124,36 +166,81 @@
       return {total:data.length,bugs,blocked,avg,prog,bugRate:((bugs/total)*100).toFixed(1),blockRate:((blocked/total)*100).toFixed(1)};
     }
 
+    function percentile(values,p){ if(!values.length) return 0; const s=values.slice().sort((a,b)=>a-b); const idx=Math.ceil((p/100)*s.length)-1; return s[Math.max(0,Math.min(idx,s.length-1))]; }
+    function avg(values){ return values.length ? Number((values.reduce((a,b)=>a+b,0)/values.length).toFixed(1)) : 0; }
+    function stateOrderLabel(v){ return String(v||"Sem estado"); }
+    function bucketAging(d){ if(d<=7) return "0-7d"; if(d<=14) return "8-14d"; if(d<=30) return "15-30d"; return "31+d"; }
+
     function renderCharts(data){
+      const activeStates=["In Dev","In Analysis","In Tests","Ready for Tests","Ready for Deployed","Approved","Committed"];
       const week=mapCount(data,weekKey);
       const wLabels=sortLabels(Object.keys(week));
-      const weekBugs={}, weekValor={};
-      data.forEach(i=>{const k=weekKey(i); if(i.isBug) weekBugs[k]=(weekBugs[k]||0)+1; else weekValor[k]=(weekValor[k]||0)+1;});
-      const bugRate=wLabels.map(k=>{const b=weekBugs[k]||0,v=weekValor[k]||0; return (b+v)?Number(((b/(b+v))*100).toFixed(1)):0;});
 
-      const byOwner={}; data.forEach(i=>{const o=i.atribuidoA||"Nao atribuido"; if(!byOwner[o]) byOwner[o]={sum:0,c:0}; byOwner[o].sum+=Number(i.diasAberto||0); byOwner[o].c+=1;});
-      const capRows=Object.entries(byOwner).map(([k,v])=>({k,val:Number((v.sum/v.c).toFixed(1))})).sort((a,b)=>b.val-a.val).slice(0,10);
+      const weekByType={};
+      data.forEach(i=>{ const wk=weekKey(i); const tp=i.tipo||"Outro"; if(!weekByType[tp]) weekByType[tp]={}; weekByType[tp][wk]=(weekByType[tp][wk]||0)+1; });
+      const typeNames=Object.keys(weekByType);
+
+      const weekBugs={}, weekTotal={};
+      data.forEach(i=>{const k=weekKey(i); weekTotal[k]=(weekTotal[k]||0)+1; if(i.isBug) weekBugs[k]=(weekBugs[k]||0)+1;});
+      const bugRate=wLabels.map(k=>{const t=weekTotal[k]||0; return t?Number((((weekBugs[k]||0)/t)*100).toFixed(1)):0;});
+
+      const allAges=data.map(i=>Number(i.diasAberto||0));
+      const inProgress=data.filter(i=>activeStates.includes(i.estado));
+      const progressAges=inProgress.map(i=>Number(i.diasAberto||0));
+      const leadMetrics=[avg(allAges), percentile(allAges,85), percentile(allAges,95)];
+      const cycleMetrics=[avg(progressAges), percentile(progressAges,85), percentile(progressAges,95)];
+
+      const byState={}; inProgress.forEach(i=>{const s=stateOrderLabel(i.estado); byState[s]=(byState[s]||0)+1;});
+      const stateLabels=Object.keys(byState);
+      const stateVals=stateLabels.map(s=>byState[s]);
+      const wipAvg=avg(stateVals);
+
+      const aging={}; inProgress.forEach(i=>{const b=bucketAging(Number(i.diasAberto||0)); aging[b]=(aging[b]||0)+1;});
+      const agingLabels=["0-7d","8-14d","15-30d","31+d"];
+      const agingVals=agingLabels.map(a=>aging[a]||0);
 
       const blocked=data.filter(i=>i.bloqueado==="Sim"), byProjBlocked={};
-      blocked.forEach(i=>{const p=i.projeto; if(!byProjBlocked[p]) byProjBlocked[p]={sum:0,c:0}; byProjBlocked[p].sum+=Number(i.diasAberto||0); byProjBlocked[p].c+=1;});
+      blocked.forEach(i=>{const p=i.projeto||"Sem projeto"; if(!byProjBlocked[p]) byProjBlocked[p]={sum:0,c:0}; byProjBlocked[p].sum+=Number(i.diasAberto||0); byProjBlocked[p].c+=1;});
       const mttuRows=Object.entries(byProjBlocked).map(([k,v])=>({k,val:Number((v.sum/v.c).toFixed(1))})).sort((a,b)=>b.val-a.val);
+      const blockedPct=data.length?Number(((blocked.length/data.length)*100).toFixed(1)):0;
 
-      const sprint=mapCount(data,sprintKey);
-      const sLabels=Object.keys(sprint).sort((a,b)=>parseInt(a.split("..D-")[1],10)-parseInt(b.split("..D-")[1],10));
-      const sVals=sLabels.map(k=>sprint[k]||0);
+      const byProj={}; data.forEach(i=>{const p=i.projeto||"Sem projeto"; if(!byProj[p]) byProj[p]={t:0,b:0,r:0}; byProj[p].t+=1; if(i.bloqueado==="Sim") byProj[p].b+=1; if(/rework|reabert|reopen|retrabalho/i.test(i.estado||"")) byProj[p].r+=1;});
+      const projLabels=Object.keys(byProj);
+      const flowEffVals=projLabels.map(p=>Number(((1-(byProj[p].b/byProj[p].t))*100).toFixed(1)));
+      const reworkVals=projLabels.map(p=>Number(((byProj[p].r/byProj[p].t)*100).toFixed(1)));
 
-      const days=Array.from({length:61},(_,i)=>i);
-      const total=data.length;
-      const real=days.map(d=>data.filter(i=>Number(i.diasAberto||0)>=d).length);
-      const ideal=days.map(d=>Number((total-(total/60)*d).toFixed(2)));
+      const states=Array.from(new Set(data.map(i=>stateOrderLabel(i.estado))));
+      const cfdData={}; states.forEach(s=>{cfdData[s]={};});
+      data.forEach(i=>{const w=weekKey(i); const s=stateOrderLabel(i.estado); cfdData[s][w]=(cfdData[s][w]||0)+1;});
 
-      destroy("c1"); charts.c1=new Chart(document.getElementById("chartThroughput"),{type:"bar",data:{labels:wLabels,datasets:[{label:"Itens",data:wLabels.map(k=>week[k]||0),backgroundColor:"rgba(76,201,240,.75)"}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-      destroy("c2"); charts.c2=new Chart(document.getElementById("chartThroughputValorBugs"),{type:"bar",data:{labels:wLabels,datasets:[{label:"Valor",data:wLabels.map(k=>weekValor[k]||0),backgroundColor:"rgba(45,212,191,.75)"},{label:"Bugs",data:wLabels.map(k=>weekBugs[k]||0),backgroundColor:"rgba(255,107,107,.75)"}]},options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true}}}});
-      destroy("c3"); charts.c3=new Chart(document.getElementById("chartBugRate"),{type:"line",data:{labels:wLabels,datasets:[{label:"Taxa de Bugs (%)",data:bugRate,borderColor:"#fbbf24",backgroundColor:"rgba(251,191,36,.25)",fill:true,tension:.25}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}});
-      destroy("c4"); charts.c4=new Chart(document.getElementById("chartCapacity"),{type:"bar",data:{labels:capRows.map(r=>r.k),datasets:[{label:"Dias",data:capRows.map(r=>r.val),backgroundColor:"rgba(155,123,255,.75)"}]},options:{responsive:true,indexAxis:"y",plugins:{legend:{display:false}}}});
-      destroy("c5"); charts.c5=new Chart(document.getElementById("chartMttu"),{type:"bar",data:{labels:mttuRows.map(r=>r.k),datasets:[{label:"Dias (proxy)",data:mttuRows.map(r=>r.val),backgroundColor:"rgba(255,107,107,.75)"}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-      destroy("c6"); charts.c6=new Chart(document.getElementById("chartVelocity"),{type:"bar",data:{labels:sLabels,datasets:[{label:"Itens/sprint",data:sVals,backgroundColor:"rgba(76,201,240,.75)"}]},options:{responsive:true,plugins:{legend:{display:false}}}});
-      destroy("c7"); charts.c7=new Chart(document.getElementById("chartBurndown"),{type:"line",data:{labels:days.map(d=>`D-${d}`),datasets:[{label:"Ideal",data:ideal,borderColor:"#2dd4bf",fill:false,tension:.15},{label:"Real",data:real,borderColor:"#ff6b6b",fill:false,tension:.15}]},options:{responsive:true}});
+      const maxAge=allAges.length?Math.max(...allAges):0;
+      const cdfLabels=Array.from({length:maxAge+1},(_,d)=>`D${d}`);
+      const cdfVals=cdfLabels.map((_,d)=>{const ok=allAges.filter(v=>v<=d).length; return allAges.length?Number(((ok/allAges.length)*100).toFixed(1)):0;});
+
+      const waitByStageRows=Object.entries(
+        data.reduce((acc,i)=>{ const s=stateOrderLabel(i.estado); if(!acc[s]) acc[s]={sum:0,c:0}; acc[s].sum+=Number(i.diasAberto||0); acc[s].c+=1; return acc; },{})
+      ).map(([k,v])=>({k,val:Number((v.sum/v.c).toFixed(1))})).sort((a,b)=>b.val-a.val);
+
+      const throughputVals=wLabels.map(k=>week[k]||0);
+      const tpMean=avg(throughputVals);
+      const tpVar=throughputVals.length?Number((throughputVals.reduce((a,v)=>a+Math.pow(v-tpMean,2),0)/throughputVals.length).toFixed(2)):0;
+      const tpStd=Number(Math.sqrt(tpVar).toFixed(2));
+
+      destroy("c1"); charts.c1=new Chart(document.getElementById("chartThroughputTotal"),{type:"bar",data:{labels:wLabels,datasets:[{label:"Itens",data:throughputVals,backgroundColor:"rgba(76,201,240,.75)"}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+      destroy("c2"); charts.c2=new Chart(document.getElementById("chartThroughputTipo"),{type:"bar",data:{labels:wLabels,datasets:typeNames.map((t,idx)=>({label:t,data:wLabels.map(w=>weekByType[t][w]||0),backgroundColor:`hsla(${(idx*55)%360},75%,60%,0.75)`}))},options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true}}}});
+      destroy("c3"); charts.c3=new Chart(document.getElementById("chartLeadTime"),{type:"bar",data:{labels:["Médio","P85","P95"],datasets:[{label:"Dias",data:leadMetrics,backgroundColor:["rgba(76,201,240,.75)","rgba(155,123,255,.75)","rgba(251,191,36,.75)"]}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+      destroy("c4"); charts.c4=new Chart(document.getElementById("chartCycleTime"),{type:"bar",data:{labels:["Médio","P85","P95"],datasets:[{label:"Dias",data:cycleMetrics,backgroundColor:["rgba(45,212,191,.75)","rgba(155,123,255,.75)","rgba(255,107,107,.75)"]}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+      destroy("c5"); charts.c5=new Chart(document.getElementById("chartBugRate"),{type:"line",data:{labels:wLabels,datasets:[{label:"Taxa de Bugs (%)",data:bugRate,borderColor:"#fbbf24",backgroundColor:"rgba(251,191,36,.25)",fill:true,tension:.25}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}});
+      destroy("c6"); charts.c6=new Chart(document.getElementById("chartWip"),{type:"bar",data:{labels:stateLabels,datasets:[{label:"Itens por estado",data:stateVals,backgroundColor:"rgba(155,123,255,.75)"},{type:"line",label:`WIP médio (${wipAvg})`,data:stateVals.map(()=>wipAvg),borderColor:"#4cc9f0",pointRadius:0,tension:0}]},options:{responsive:true}});
+      destroy("c7"); charts.c7=new Chart(document.getElementById("chartAging"),{type:"bar",data:{labels:agingLabels,datasets:[{label:"Itens",data:agingVals,backgroundColor:"rgba(76,201,240,.75)"}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+      destroy("c8"); charts.c8=new Chart(document.getElementById("chartMttu"),{type:"bar",data:{labels:mttuRows.map(r=>r.k),datasets:[{label:"Dias (proxy)",data:mttuRows.map(r=>r.val),backgroundColor:"rgba(255,107,107,.75)"}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+      destroy("c9"); charts.c9=new Chart(document.getElementById("chartBlockedPct"),{type:"doughnut",data:{labels:["Bloqueados","Nao bloqueados"],datasets:[{data:[blockedPct,Number((100-blockedPct).toFixed(1))],backgroundColor:["rgba(255,107,107,.8)","rgba(45,212,191,.7)"]}]},options:{responsive:true}});
+      destroy("c10"); charts.c10=new Chart(document.getElementById("chartFlowEfficiency"),{type:"bar",data:{labels:projLabels,datasets:[{label:"Flow Efficiency (%)",data:flowEffVals,backgroundColor:"rgba(45,212,191,.75)"}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}});
+      destroy("c11"); charts.c11=new Chart(document.getElementById("chartCfd"),{type:"line",data:{labels:wLabels,datasets:states.map((s,idx)=>({label:s,data:wLabels.map(w=>cfdData[s][w]||0),borderColor:`hsla(${(idx*45)%360},70%,65%,1)`,backgroundColor:`hsla(${(idx*45)%360},70%,65%,0.25)`,fill:true,tension:.2}))},options:{responsive:true,scales:{y:{stacked:true}}}});
+      destroy("c12"); charts.c12=new Chart(document.getElementById("chartPredictability"),{type:"line",data:{labels:cdfLabels,datasets:[{label:"Prob. de concluir até X dias (%)",data:cdfVals,borderColor:"#4cc9f0",backgroundColor:"rgba(76,201,240,.2)",fill:true,tension:.2}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}});
+      destroy("c13"); charts.c13=new Chart(document.getElementById("chartRework"),{type:"bar",data:{labels:projLabels,datasets:[{label:"Retrabalho (%)",data:reworkVals,backgroundColor:"rgba(251,191,36,.75)"}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}});
+      destroy("c14"); charts.c14=new Chart(document.getElementById("chartWaitByStage"),{type:"bar",data:{labels:waitByStageRows.map(r=>r.k),datasets:[{label:"Dias médios",data:waitByStageRows.map(r=>r.val),backgroundColor:"rgba(155,123,255,.75)"}]},options:{responsive:true,indexAxis:"y",plugins:{legend:{display:false}}}});
+      destroy("c15"); charts.c15=new Chart(document.getElementById("chartThroughputStability"),{type:"line",data:{labels:wLabels,datasets:[{label:"Throughput",data:throughputVals,borderColor:"#4cc9f0",fill:false,tension:.2},{label:`Média (${tpMean}) | Var(${tpVar}) | DP(${tpStd})`,data:throughputVals.map(()=>tpMean),borderColor:"#fbbf24",borderDash:[6,4],pointRadius:0,tension:0}]},options:{responsive:true}});
     }
 
     function renderTable(data){
@@ -165,6 +252,46 @@
       }).join("") || '<tr><td colspan="8">Nenhum item encontrado.</td></tr>';
     }
 
+    function renderExecComparison(data){
+      const planningPokerHours = 16;
+      const sddGainPct = 35;
+      const sprintCapacityHours = 160;
+      const quarterCapacityHours = sprintCapacityHours * 6; // 1 trimestre ~ 6 sprints
+
+      const tradHours = planningPokerHours;
+      const sddHours = Number((planningPokerHours * (1 - sddGainPct/100)).toFixed(1));
+      const gainHours = Number((tradHours - sddHours).toFixed(1));
+
+      const tradSprint = Number((sprintCapacityHours / tradHours).toFixed(1));
+      const sddSprint = Number((sprintCapacityHours / sddHours).toFixed(1));
+      const tradQuarter = Number((quarterCapacityHours / tradHours).toFixed(1));
+      const sddQuarter = Number((quarterCapacityHours / sddHours).toFixed(1));
+
+      document.getElementById("execTradHours").textContent=`${tradHours}h`;
+      document.getElementById("execSddHours").textContent=`${sddHours}h`;
+      document.getElementById("execGainHours").textContent=`${gainHours}h`;
+      document.getElementById("execGainPct").textContent=`${sddGainPct.toFixed(1)}% de redução de esforço`;
+      document.getElementById("execOkrSprint").textContent=`${tradSprint} vs ${sddSprint}`;
+
+      destroy("exec1"); charts.exec1=new Chart(document.getElementById("chartExecHours"),{
+        type:"bar",
+        data:{labels:["Tradicional","SDD"],datasets:[{label:"Horas por atividade",data:[tradHours,sddHours],backgroundColor:["rgba(255,107,107,.75)","rgba(45,212,191,.75)"]}]},
+        options:{responsive:true,plugins:{legend:{display:false}}}
+      });
+
+      destroy("exec2"); charts.exec2=new Chart(document.getElementById("chartExecOkr"),{
+        type:"bar",
+        data:{
+          labels:["Sprint (160h)","Trimestre (960h)"],
+          datasets:[
+            {label:"Tradicional",data:[tradSprint,tradQuarter],backgroundColor:"rgba(155,123,255,.75)"},
+            {label:"SDD",data:[sddSprint,sddQuarter],backgroundColor:"rgba(76,201,240,.75)"}
+          ]
+        },
+        options:{responsive:true}
+      });
+    }
+
     function updateDashboard(){
       const data=filteredData(), m=metrics(data);
       document.getElementById("kpiTotal").textContent=m.total;
@@ -174,6 +301,7 @@
       document.getElementById("kpiProg").textContent=`${m.prog} em andamento`;
       document.getElementById("kpiBugRate").textContent=`${m.bugRate}% do backlog`;
       document.getElementById("kpiBlockRate").textContent=`${m.blockRate}% do backlog`;
+      renderExecComparison(data);
       renderCharts(data);
       renderTable(data);
     }
